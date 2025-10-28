@@ -292,6 +292,11 @@ export class HomePage implements OnInit, OnDestroy {
     } else if (view === 'calendar') {
       this.updateDashboardData();
       this.generateCalendar();
+      const today = new Date();
+      const todayTasks = this.tasks.filter(task => new Date(task.createdAt).toDateString() === today.toDateString());
+      if (todayTasks.length > 0) {
+        this.selectedCalendarDate = today;
+      }
     }
   }
 
@@ -421,9 +426,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   selectCalendarDate(day: { date: Date; tasks: Task[]; isCurrentMonth: boolean }) {
-    if (day.tasks.length > 0) {
-      this.selectedCalendarDate = day.date;
-    }
+    this.selectedCalendarDate = day.date;
   }
 
   closeTaskDetails() {

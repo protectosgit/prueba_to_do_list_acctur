@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.todoapp.app',
-  appName: 'Todo App',
+  appName: 'Mis tareas',
   webDir: 'www',
   server: {
     androidScheme: 'https'

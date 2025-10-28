@@ -49,7 +49,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!showAddForm && currentView === 'list'" style="margin-bottom: 60px;">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!showAddForm && currentView === 'list'" class="custom-fab">
     <ion-fab-button (click)="toggleAddForm()" color="primary">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
@@ -193,6 +193,7 @@
               [class.other-month]="!day.isCurrentMonth"
               [class.today]="isToday(day.date)"
               [class.has-tasks]="day.tasks.length > 0"
+              [class.has-tasks-pointer]="day.tasks.length > 0"
               (click)="selectCalendarDate(day)">
               <div class="day-number">{{ day.date.getDate() }}</div>
               <div class="task-indicators" *ngIf="day.tasks.length > 0">
@@ -213,9 +214,10 @@
               <ion-icon name="close"></ion-icon>
             </ion-button>
           </div>
-          <ion-card-subtitle>{{ getSelectedDateTasks().length }} {{ getSelectedDateTasks().length === 1 ? 'tarea' : 'tareas' }}</ion-card-subtitle>
+          <ion-card-subtitle *ngIf="getSelectedDateTasks().length > 0">{{ getSelectedDateTasks().length }} {{ getSelectedDateTasks().length === 1 ? 'tarea' : 'tareas' }}</ion-card-subtitle>
+          <ion-card-subtitle *ngIf="getSelectedDateTasks().length === 0">No hay tareas disponibles para este día</ion-card-subtitle>
         </ion-card-header>
-        <ion-card-content>
+        <ion-card-content *ngIf="getSelectedDateTasks().length > 0">
           <ion-list lines="none">
             <ion-item *ngFor="let task of getSelectedDateTasks(); trackBy: trackByTaskId" class="calendar-task-item">
               <ion-icon 
@@ -311,7 +313,8 @@
             *ngIf="!showCompletedOnly && !showPendingOnly" 
             expand="block" 
             (click)="toggleAddForm()"
-            color="primary">
+            color="primary"
+            class="create-first-task-button">
             <ion-icon name="add-circle" slot="start"></ion-icon>
             Crea tu primera tarea
           </ion-button>

@@ -44,7 +44,7 @@ export class FirebaseService {
       // Set default config values
       this.remoteConfig.defaultConfig = {
         'enable_categories': true,
-        'enable_dark_mode': true,
+        'enable_dark_mode': false,
         'max_tasks': 100,
         'enable_notifications': false,
         'show_completed_tasks': true
@@ -67,7 +67,6 @@ export class FirebaseService {
       // Return default values if Firebase is not initialized
       const defaults: { [key: string]: boolean } = {
         'enable_categories': true,
-        'enable_dark_mode': true,
         'enable_notifications': false,
         'show_completed_tasks': true
       };
