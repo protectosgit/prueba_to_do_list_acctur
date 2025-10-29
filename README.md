@@ -624,21 +624,15 @@ ngOnDestroy() {
 ##  Capturas de Pantalla
 
 > **Nota**: Agrega capturas de pantalla de la aplicación en funcionamiento:
-> - Vista principal con lista de tareas y navegación por tabs
-> - Formulario de agregar tarea con validación
-> - Filtros por categoría con iconos de colores
-> - Filtros por estado (todas, pendientes, completadas)
-> - Dashboard con estadísticas completas:
->   * Resumen general
->   * Progreso semanal
->   * Día más productivo
->   * Distribución por categorías
-> - Vista de calendario mensual con indicadores
-> - Detalle de tareas por fecha seleccionada
-> - Estados vacíos con mensajes contextuales
-> - Modo oscuro (todas las vistas)
-> - Barra de progreso dinámica
-> - Action sheet con opciones de tarea
+- ![Imagen Todas](imagenesyvideos/Imagentodas.jpg)
+- ![Personal](imagenesyvideos/personal.jpg)
+- ![Trabajo](imagenesyvideos/trabajo.jpg)
+- ![Resumen](imagenesyvideos/resumen.jpg)
+- ![Compras](imagenesyvideos/compras.jpg)
+- ![Dashboard](imagenesyvideos/dasboard.jpg)
+- ![Calendario](imagenesyvideos/calendario.jpg)
+- ![Calendario 1](imagenesyvideos/calendario1.jpg)
+
 
 Para generar capturas:
 ```bash
@@ -650,34 +644,16 @@ ionic cordova run android --device
 # Tomar screenshots con las herramientas del dispositivo
 ```
 
-##  Video Demostración
+## Video Demostración
 
 > **Nota**: Graba un video mostrando:
-> 1. Agregar tareas con diferentes categorías
-> 2. Completar y descompletar tareas
-> 3. Editar tareas existentes
-> 4. Eliminar tareas con confirmación
-> 5. Filtrar por estado (todas, pendientes, completadas)
-> 6. Filtrar por categorías
-> 7. Navegar al Dashboard y ver:
->    - Resumen general
->    - Progreso semanal
->    - Día más productivo
->    - Distribución por categorías
-> 8. Navegar al Calendario y mostrar:
->    - Vista mensual con indicadores
->    - Navegación entre meses
->    - Seleccionar un día con tareas
->    - Ver detalle de tareas del día
-> 9. Navegación fluida entre las 3 vistas (tabs)
-> 10. Estados vacíos y mensajes contextuales
-
-##  Estructura del Proyecto
-
+<video controls width="100%">
+  <source src="imagenesyvideos/Screen_Recording_20251028_180545_Mis tareas.mp4" type="video/mp4">
+  Tu navegador no soporta el tag de video.
+</video>
 
 
 Este proyecto fue desarrollado como prueba técnica.
-
 ## Autor
 
 **Feliciano Mosquera**
