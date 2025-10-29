@@ -1,0 +1,432 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      <ion-icon name="checkbox-outline" slot="start"></ion-icon>
+      <span *ngIf="currentView === 'list'">Mis tareas</span>
+      <span *ngIf="currentView === 'dashboard'">Dashboard</span>
+      <span *ngIf="currentView === 'calendar'">Calendario</span>
+    </ion-title>
+  </ion-toolbar>
+
+  <!-- Stats Bar - Solo en vista lista -->
+ <ion-toolbar *ngIf="currentView === 'list'">
+  <ion-segment scrollable value="all">
+    <ion-segment-button value="all" (click)="filterByCategory(null)">
+      <ion-label>
+        <div class="stat-label">Todas</div>
+        <div class="stat-value">{{ getTaskStats().total }}</div>
+      </ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="pending" (click)="filterPendingTasks()">
+      <ion-label>
+        <div class="stat-label">Pendientes</div>
+        <div class="stat-value">{{ getTaskStats().pending }}</div>
+      </ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="completed" (click)="toggleCompletedFilter()">
+      <ion-label>
+        <div class="stat-label">Completadas</div>
+        <div class="stat-value">{{ getTaskStats().completed }}</div>
+      </ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</ion-toolbar>
+
+  <!-- Category Filter - Solo en vista lista -->
+  <ion-toolbar *ngIf="currentView === 'list'">
+    <ion-segment scrollable [value]="selectedCategory || 'all'">
+      <ion-segment-button value="all" (click)="filterByCategory(null)">
+        <ion-label>Todas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button *ngFor="let category of categories" 
+                          [value]="category.id"
+                          (click)="filterByCategory(category.id)">
+        <ion-icon [name]="category.icon" [color]="category.color"></ion-icon>
+        <ion-label>{{ category.name }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!showAddForm && currentView === 'list'" style="margin-bottom: 60px;">
+    <ion-fab-button (click)="toggleAddForm()" color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <div class="content-wrapper" [class.with-tabs]="true">
+    <!-- DASHBOARD VIEW -->
+    <div *ngIf="currentView === 'dashboard'" class="dashboard-view">
+      <ion-card class="stats-overview">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="stats-chart" color="primary"></ion-icon>
+            Resumen General
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="6">
+                <div class="stat-box">
+                  <ion-icon name="checkbox" color="success"></ion-icon>
+                  <div class="stat-number">{{ getTaskStats().completed }}</div>
+                  <div class="stat-label">Completadas</div>
+                </div>
+              </ion-col>
+              <ion-col size="6">
+                <div class="stat-box">
+                  <ion-icon name="hourglass" color="warning"></ion-icon>
+                  <div class="stat-number">{{ getTaskStats().pending }}</div>
+                  <div class="stat-label">Pendientes</div>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <div class="stat-box-full">
+                  <ion-icon name="albums" color="primary"></ion-icon>
+                  <div class="stat-number">{{ getTaskStats().total }}</div>
+                  <div class="stat-label">Total de Tareas</div>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="trending-up" color="success"></ion-icon>
+            Progreso Semanal
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="trend-stats">
+            <div class="trend-item">
+              <span class="trend-label">Últimos 7 días</span>
+              <span class="trend-value">{{ getCompletionTrend().total }} tareas</span>
+            </div>
+            <div class="trend-item">
+              <span class="trend-label">Completadas</span>
+              <span class="trend-value">{{ getCompletionTrend().completed }}</span>
+            </div>
+            <div class="trend-item">
+              <span class="trend-label">Tasa de completado</span>
+              <span class="trend-value">{{ getCompletionTrend().rate | number:'1.0-0' }}%</span>
+            </div>
+          </div>
+          <ion-progress-bar [value]="getCompletionTrend().rate / 100" color="success"></ion-progress-bar>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngIf="getMostProductiveDay()">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="trophy" color="warning"></ion-icon>
+            Día más productivo
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="productive-day">
+            <ion-icon name="calendar" color="primary"></ion-icon>
+            <div>
+              <h3>{{ getMostProductiveDay()!.date | date:'fullDate' }}</h3>
+              <p>{{ getMostProductiveDay()!.tasks.length }} tareas creadas</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngIf="getTasksByCategoryStats().length > 0">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="pie-chart" color="tertiary"></ion-icon>
+            Tareas por Categoría
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none">
+            <ion-item *ngFor="let catStat of getTasksByCategoryStats(); trackBy: trackByCategoryId">
+              <ion-icon [name]="catStat.icon" [color]="catStat.color" slot="start"></ion-icon>
+              <ion-label>
+                <h3>{{ catStat.name }}</h3>
+                <p>Total: {{ catStat.count }} | Completadas: {{ catStat.completed }} | Pendientes: {{ catStat.pending }}</p>
+              </ion-label>
+              <ion-badge [color]="catStat.color" slot="end">{{ catStat.count }}</ion-badge>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- CALENDAR VIEW -->
+    <div *ngIf="currentView === 'calendar'" class="calendar-view">
+      <ion-card class="calendar-card">
+        <ion-card-header>
+          <div class="calendar-header">
+            <ion-button fill="clear" (click)="previousMonth()">
+              <ion-icon name="chevron-back"></ion-icon>
+            </ion-button>
+            <ion-card-title>{{ currentMonth | date:'MMMM yyyy' }}</ion-card-title>
+            <ion-button fill="clear" (click)="nextMonth()">
+              <ion-icon name="chevron-forward"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="calendar-weekdays">
+            <div class="weekday">Dom</div>
+            <div class="weekday">Lun</div>
+            <div class="weekday">Mar</div>
+            <div class="weekday">Mié</div>
+            <div class="weekday">Jue</div>
+            <div class="weekday">Vie</div>
+            <div class="weekday">Sáb</div>
+          </div>
+          <div class="calendar-grid">
+            <div 
+              *ngFor="let day of calendarDays; trackBy: trackByCalendarDay"
+              class="calendar-day"
+              [class.other-month]="!day.isCurrentMonth"
+              [class.today]="isToday(day.date)"
+              [class.has-tasks]="day.tasks.length > 0"
+              (click)="selectCalendarDate(day)">
+              <div class="day-number">{{ day.date.getDate() }}</div>
+              <div class="task-indicators" *ngIf="day.tasks.length > 0">
+                <span class="task-dot" *ngFor="let task of day.tasks.slice(0, 3)" 
+                      [style.background-color]="task.completed ? '#2dd36f' : '#3880ff'"></span>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Selected Date Tasks -->
+      <ion-card *ngIf="selectedCalendarDate" class="selected-date-tasks">
+        <ion-card-header>
+          <div class="selected-date-header">
+            <ion-card-title>{{ selectedCalendarDate | date:'fullDate' }}</ion-card-title>
+            <ion-button fill="clear" (click)="closeTaskDetails()">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
+          </div>
+          <ion-card-subtitle>{{ getSelectedDateTasks().length }} {{ getSelectedDateTasks().length === 1 ? 'tarea' : 'tareas' }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none">
+            <ion-item *ngFor="let task of getSelectedDateTasks(); trackBy: trackByTaskId" class="calendar-task-item">
+              <ion-icon 
+                [name]="task.completed ? 'checkmark-circle' : 'radio-button-off'" 
+                [color]="task.completed ? 'success' : 'medium'"
+                slot="start">
+              </ion-icon>
+              <ion-label>
+                <h3 [class.completed-task]="task.completed">{{ task.title }}</h3>
+                <p>
+                  <ion-badge [color]="getCategoryInfo(task.category).color" size="small">
+                    {{ getCategoryInfo(task.category).name }}
+                  </ion-badge>
+                  <span class="task-time">
+                    <ion-icon name="time-outline"></ion-icon>
+                    {{ task.createdAt | date:'shortTime' }}
+                  </span>
+                </p>
+              </ion-label>
+              <ion-button fill="clear" size="small" (click)="showTaskOptions(task)">
+                <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- LIST VIEW -->
+    <div *ngIf="currentView === 'list'">
+    <ion-card *ngIf="showAddForm" class="add-task-card fade-in">
+      <ion-card-header>
+        <ion-card-title>Nueva tarea</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="taskForm" (ngSubmit)="addTask()">
+          <ion-item>
+            <ion-label position="stacked">Título *</ion-label>
+            <ion-input 
+              formControlName="title" 
+              placeholder="Ej: Comprar leche"
+              type="text">
+            </ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
+            <p class="ion-padding-start">
+              <small>El título es requerido (mínimo 3 caracteres)</small>
+            </p>
+          </ion-text>
+
+          <ion-item>
+            <ion-label position="stacked">Descripción</ion-label>
+            <ion-textarea 
+              formControlName="description" 
+              placeholder="Detalles adicionales..."
+              rows="3">
+            </ion-textarea>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Categoría *</ion-label>
+            <ion-select formControlName="category" interface="popover">
+              <ion-select-option *ngFor="let category of categories" [value]="category.id">
+                {{ category.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div class="form-buttons">
+            <ion-button expand="block" type="submit" [disabled]="taskForm.invalid">
+              <ion-icon name="add" slot="start"></ion-icon>
+              Agregar Tarea
+            </ion-button>
+            <ion-button expand="block" fill="outline" color="medium" (click)="toggleAddForm()">
+              Cancelar
+            </ion-button>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Tasks List -->
+    <div class="tasks-container">
+      <ion-card *ngIf="filteredTasks.length === 0" class="empty-state">
+        <ion-card-content>
+          <ion-icon name="clipboard-outline" color="medium"></ion-icon>
+          <h2>No hay tareas</h2>
+          <p *ngIf="showCompletedOnly">No hay tareas completadas</p>
+          <p *ngIf="showPendingOnly">No hay tareas pendientes</p>
+          <p *ngIf="!showCompletedOnly && !showPendingOnly && selectedCategory">No hay tareas en esta categoría</p>
+          <p *ngIf="!showCompletedOnly && !showPendingOnly && !selectedCategory">Comienza agregando tu primera tarea</p>
+          <ion-button 
+            *ngIf="!showCompletedOnly && !showPendingOnly" 
+            expand="block" 
+            (click)="toggleAddForm()"
+            color="primary">
+            <ion-icon name="add-circle" slot="start"></ion-icon>
+            Crea tu primera tarea
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngFor="let task of filteredTasks; trackBy: trackByTaskId" 
+                class="task-card fade-in"
+                [class.completed]="task.completed">
+        <ion-card-content>
+          <div class="task-content">
+            <div class="task-checkbox">
+              <ion-checkbox 
+                [checked]="task.completed"
+                (ionChange)="toggleTaskCompletion(task)">
+              </ion-checkbox>
+            </div>
+            
+            <div class="task-details" (click)="showTaskOptions(task)">
+              <div class="task-header">
+                <h3 [class.completed-task]="task.completed">{{ task.title }}</h3>
+                <ion-badge 
+                  [color]="getCategoryInfo(task.category).color"
+                  class="category-badge">
+                  <ion-icon [name]="getCategoryInfo(task.category).icon" size="small"></ion-icon>
+                  {{ getCategoryInfo(task.category).name }}
+                </ion-badge>
+              </div>
+              
+              <p *ngIf="task.description" [class.completed-task]="task.completed">
+                {{ task.description }}
+              </p>
+              
+              <div class="task-meta">
+                <ion-text color="medium">
+                  <small>
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    {{ task.createdAt | date:'short' }}
+                  </small>
+                </ion-text>
+                <ion-text color="success" *ngIf="task.completed && task.completedAt">
+                  <small>
+                    <ion-icon name="checkmark-circle"></ion-icon>
+                    Completada: {{ task.completedAt | date:'short' }}
+                  </small>
+                </ion-text>
+              </div>
+            </div>
+
+            <div class="task-actions">
+              <ion-button fill="clear" size="small" (click)="editTask(task)">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" size="small" color="danger" (click)="deleteTask(task)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Progress Bar -->
+    <ion-card *ngIf="filteredTasks.length > 0" class="progress-card">
+      <ion-card-content>
+        <div class="progress-header">
+          <h4>
+            <span *ngIf="!showCompletedOnly && !showPendingOnly && !selectedCategory">Progreso General</span>
+            <span *ngIf="showCompletedOnly">Tareas Completadas</span>
+            <span *ngIf="showPendingOnly">Tareas Pendientes</span>
+            <span *ngIf="!showCompletedOnly && !showPendingOnly && selectedCategory">Progreso - {{ getCategoryInfo(selectedCategory).name }}</span>
+          </h4>
+          <ion-text color="primary">
+            <strong>{{ getFilteredStats().completionRate | number:'1.0-0' }}%</strong>
+          </ion-text>
+        </div>
+        <ion-progress-bar 
+          [value]="getFilteredStats().completionRate / 100"
+          color="primary">
+        </ion-progress-bar>
+        <ion-text color="medium">
+          <small *ngIf="!showCompletedOnly && !showPendingOnly">
+            {{ getFilteredStats().completed }} de {{ getFilteredStats().total }} 
+            {{ getFilteredStats().total === 1 ? 'tarea' : 'tareas' }} completadas
+          </small>
+          <small *ngIf="showCompletedOnly">
+            {{ getFilteredStats().completed }} 
+            {{ getFilteredStats().completed === 1 ? 'tarea completada' : 'tareas completadas' }}
+          </small>
+          <small *ngIf="showPendingOnly">
+            {{ getFilteredStats().pending }} 
+            {{ getFilteredStats().pending === 1 ? 'tarea pendiente' : 'tareas pendientes' }}
+          </small>
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="bottom-tabs">
+    <ion-segment [value]="currentView" (ionChange)="changeView($any($event.detail.value))">
+      <ion-segment-button value="list">
+        <ion-icon name="list"></ion-icon>
+        <ion-label>Tareas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="dashboard">
+        <ion-icon name="stats-chart"></ion-icon>
+        <ion-label>Dashboard</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="calendar">
+        <ion-icon name="calendar"></ion-icon>
+        <ion-label>Calendario</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-footer>
