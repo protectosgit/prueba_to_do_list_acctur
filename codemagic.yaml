@@ -6,9 +6,8 @@ workflows:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace" # Ajusta si tu workspace tiene un nombre diferente
         XCODE_SCHEME: "App" # Ajusta si tu esquema tiene un nombre diferente
         # Agrega tus variables de entorno de Firebase aquí si las necesitas para el build
-      ios:
-        xcode: 15.0 # Puedes ajustar la versión de Xcode
-        cocoapods: 1.13.0 # Puedes ajustar la versión de CocoaPods
+    xcode: 15.0 # Puedes ajustar la versión de Xcode
+    cocoapods: 1.13.0 # Puedes ajustar la versión de CocoaPods
     
     scripts:
       - name: Install npm dependencies
