@@ -2,12 +2,12 @@ workflows:
   ios-build:
     name: iOS Build
     environment:
+      xcode: 15.0 # Puedes ajustar la versión de Xcode
+      cocoapods: 1.13.0 # Puedes ajustar la versión de CocoaPods
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace" # Ajusta si tu workspace tiene un nombre diferente
         XCODE_SCHEME: "App" # Ajusta si tu esquema tiene un nombre diferente
         # Agrega tus variables de entorno de Firebase aquí si las necesitas para el build
-    xcode: 15.0 # Puedes ajustar la versión de Xcode
-    cocoapods: 1.13.0 # Puedes ajustar la versión de CocoaPods
     
     scripts:
       - name: Install npm dependencies
@@ -35,5 +35,4 @@ workflows:
     publishing:
       email:
         recipients:
-          - flixxm21@gmail.com 
-        
+          - flixxm21@gmail.com # Reemplaza con tu email para recibir el IPA
