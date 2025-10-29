@@ -2,26 +2,24 @@ workflows:
   ios-build:
     name: iOS Build
     environment:
-      xcode: latest # Cambiado de 15.0 a latest
-      cocoapods: default # Cambiado de 1.13.0 a default
+      xcode: latest 
+      cocoapods: default 
       vars:
-        XCODE_WORKSPACE: "ios/App/App.xcworkspace" # Ajusta si tu workspace tiene un nombre diferente
-        XCODE_SCHEME: "App" # Ajusta si tu esquema tiene un nombre diferente
-        # Agrega tus variables de entorno de Firebase aquí si las necesitas para el build
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace" 
+        XCODE_SCHEME: "App" 
     
     scripts:
       - name: Install npm dependencies
         script: npm install
 
       - name: Build Ionic/Capacitor project
-        script: npm run build # Asume que tienes un script 'build' en package.json
+        script: npm run build 
       
       - name: Add iOS platform
-        script: npx cap add ios # O `npx cordova platform add ios` si usas Cordova directamente
-      
+        script: npx cap add ios 
+
       - name: Update Capacitor/Cordova
-        script: npx cap update ios # Si usas Capacitor
-        # O `npx cordova prepare ios` si usas Cordova directamente
+        script: npx cap update ios 
 
       - name: Pod install
         script: |

@@ -30,8 +30,8 @@ Aplicación móvil híbrida de gestión de tareas desarrollada con **Ionic Frame
 Nota: Este enlace te llevara a wetransfer
 aceptas todos los terminos  y das en el boton de descargar  a continuacion comparto la foto de la vista de wetransfer 
 -![wetransfer](imagenesyvideos/Referencia.jpg)
- https://we.tl/t-6OhU20QA6M
 
+copia y pega este enlace => https://we.tl/t-6OhU20QA6M
 
 
 O descarga desde: [**GitHub Releases**](https://github.com/protectosgit/prueba_to_do_list_acctur/releases)
@@ -52,10 +52,20 @@ La generación de archivos IPA requiere:
 - Cuenta de Apple Developer 
 - Certificados de firma de código
 
-Por limitaciones de plataforma, el IPA no está disponible en esta versión. 
-por lo tanto comparto imagenes de mi telefono ya que cree un acceso directo desde una mac a mi telefono para realizar la prueba. 
+**Nota sobre la generación de IPA con Codemagic:**
 
-imagenes del telefono
+Durante el proceso de desarrollo y la configuración de CI/CD con Codemagic, se encontraron desafíos técnicos para la correcta generación y exportación del archivo IPA para iOS.
+A pesar de haber configurado el flujo de trabajo en `codemagic.yaml`, no fue posible obtener un IPA funcional directamente desde la plataforma debido a limitaciones específicas o configuraciones adicionales no resueltas en el entorno de build.
+
+**Alternativa para la demostración:**
+
+Dada esta limitación, para la presentación y prueba de la aplicación en dispositivos iOS, se optó por una solución alternativa:
+- Se estableció un acceso directo desde un entorno macOS (con Xcode y certificados de desarrollador configurados) a un dispositivo iPhone.
+- Esto permitió la instalación y ejecución directa de la aplicación en el dispositivo para verificar su funcionamiento y capturar las imágenes de demostración.
+
+A continuación, se adjuntan las capturas de pantalla tomadas directamente desde un iPhone para ilustrar la experiencia de usuario en la plataforma iOS.
+
+
 
 ---
 
@@ -131,7 +141,7 @@ npm install -g cordova
 1. **Clonar el repositorio**
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/protectosgit/prueba_to_do_list_acctur.git>
 cd todo-app
 ```
 
@@ -236,10 +246,8 @@ cordova platform add android
 2. **Compilar APK de Debug**
 
 ```bash
-# Si tienes build-tools 36.1.0 o superior
 cordova build android -- --gradleArg=-PcdvBuildToolsVersion=36.1.0
 
-# O simplemente (si tienes la versión correcta de build-tools)
 cordova build android
 ```
 
@@ -248,10 +256,8 @@ El APK se generará en: `platforms/android/app/build/outputs/apk/debug/app-debug
 3. **Compilar APK de Release (para distribución)**
 
 ```bash
-# APK de release (firmado)
 cordova build android --release -- --gradleArg=-PcdvBuildToolsVersion=36.1.0
 
-# AAB para Google Play Store
 cordova build android --release -- --packageType=bundle
 ```
 
@@ -261,10 +267,9 @@ cordova build android --release -- --packageType=bundle
 # Generar keystore
 keytool -genkey -v -keystore todo-app.keystore -alias todo-app -keyalg RSA -keysize 2048 -validity 10000
 
-# Firmar APK
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore todo-app.keystore app-release-unsigned.apk todo-app
 
-# Optimizar con zipalign
+
 zipalign -v 4 app-release-unsigned.apk todo-app-release.apk
 ```
 
@@ -319,34 +324,6 @@ En Xcode:
 - Distribuir el IPA
 
 El IPA se puede exportar desde Xcode Organizer.
-
-### Opción 2: Compilación de iOS con Codemagic (Recomendado)
-
-Si no tienes una Mac o prefieres un proceso más sencillo, puedes usar Codemagic para compilar tu aplicación iOS.
-
-1.  **Regístrate en Codemagic**
-    *   Ve a [https://codemagic.io/signup](https://codemagic.io/signup)
-    *   Regístrate con tu cuenta de GitHub, GitLab o Bitbucket (es lo más sencillo para conectar tu repositorio).
-
-2.  **Conecta tu Repositorio**
-    *   Una vez registrado, en el dashboard de Codemagic, haz clic en "Add application".
-    *   Selecciona tu proveedor de Git (GitHub, GitLab, Bitbucket) y autoriza a Codemagic.
-    *   Elige el repositorio `prueba_to_do_list_acctur` (o el nombre de tu repositorio).
-    *   Selecciona "Ionic/Capacitor App" como el tipo de proyecto.
-
-3.  **Configura los Parámetros del Build**
-    *   En la configuración del proyecto, ve a la sección "Build".
-    *   Asegúrate de que la plataforma seleccionada sea "iOS".
-    *   **Importante**: Necesitarás configurar la firma de código (code signing) para iOS. Esto generalmente implica subir tus certificados y perfiles de aprovisionamiento (`.p12` y `.mobileprovision`) de tu cuenta de Apple Developer a Codemagic. Codemagic tiene una guía detallada para esto.
-
-4.  **Inicia la Compilación**
-    *   Una vez configurado, haz clic en "Start new build".
-    *   Codemagic clonará tu repositorio, instalará las dependencias y compilará tu aplicación para iOS. Este proceso puede tardar unos minutos.
-
-5.  **Descarga el IPA**
-    *   Cuando la compilación finalice exitosamente, verás un enlace para descargar el archivo `.ipa` directamente desde el dashboard de Codemagic.
-
-Este método es muy eficiente si no dispones de un entorno macOS para la compilación de iOS.
 
 ##  Funcionalidades Implementadas
 
@@ -492,7 +469,6 @@ Sistema de navegación inferior fijo:
 ### 1. Optimización de Inicio
 
 ```typescript
-// Lazy loading de módulos
 const routes: Routes = [
   {
     path: 'home',
@@ -500,7 +476,6 @@ const routes: Routes = [
   }
 ];
 
-// Precarga de módulos
 RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
 ```
 
