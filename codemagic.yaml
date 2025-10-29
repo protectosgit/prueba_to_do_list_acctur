@@ -2,7 +2,7 @@ workflows:
   ios-build:
     name: iOS Build
     environment:
-      xcode: 15.0 # Puedes ajustar la versión de Xcode
+      xcode: latest # Cambiado de 15.0 a latest
       cocoapods: 1.13.0 # Puedes ajustar la versión de CocoaPods
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace" # Ajusta si tu workspace tiene un nombre diferente
