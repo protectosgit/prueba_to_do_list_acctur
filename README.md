@@ -27,9 +27,12 @@ Aplicación móvil híbrida de gestión de tareas desarrollada con **Ionic Frame
 
 ####  Enlace de Descarga Directa:
 
-```
-https://github.com/protectosgit/prueba_to_do_list_acctur/releases/download/v1.0.0/todo-app-v1.0.0-debug.apk
-```
+Nota: Este enlace te llevara a wetransfer
+aceptas todos los terminos  y das en el boton de descargar  a continuacion comparto la foto de la vista de wetransfer 
+-![wetransfer](imagenesyvideos/Referencia.jpg)
+ https://we.tl/t-6OhU20QA6M
+
+
 
 O descarga desde: [**GitHub Releases**](https://github.com/protectosgit/prueba_to_do_list_acctur/releases)
 
@@ -46,16 +49,17 @@ O descarga desde: [**GitHub Releases**](https://github.com/protectosgit/prueba_t
 
 La generación de archivos IPA requiere:
 - macOS con Xcode instalado
-- Cuenta de Apple Developer ($99/año)
+- Cuenta de Apple Developer 
 - Certificados de firma de código
 
-Por limitaciones de plataforma, el IPA no está disponible en esta versión. Si necesitas la versión iOS, puedes:
-- Usar un servicio de compilación en la nube (Ionic Appflow, EAS Build)
-- Compilar localmente en una Mac siguiendo las instrucciones en [COMPILACIÓN.md](GUIA_RAPIDA_APK.md)
+Por limitaciones de plataforma, el IPA no está disponible en esta versión. 
+por lo tanto comparto imagenes de mi telefono ya que cree un acceso directo desde una mac a mi telefono para realizar la prueba. 
+
+imagenes del telefono
 
 ---
 
-##  Características
+##  Características de to-do-list Mis tareas 
 
 -  **Agregar tareas** con título, descripción y categoría
 -  **Completar/Descompletar tareas** con un solo toque
@@ -316,7 +320,33 @@ En Xcode:
 
 El IPA se puede exportar desde Xcode Organizer.
 
+### Opción 2: Compilación de iOS con Codemagic (Recomendado)
 
+Si no tienes una Mac o prefieres un proceso más sencillo, puedes usar Codemagic para compilar tu aplicación iOS.
+
+1.  **Regístrate en Codemagic**
+    *   Ve a [https://codemagic.io/signup](https://codemagic.io/signup)
+    *   Regístrate con tu cuenta de GitHub, GitLab o Bitbucket (es lo más sencillo para conectar tu repositorio).
+
+2.  **Conecta tu Repositorio**
+    *   Una vez registrado, en el dashboard de Codemagic, haz clic en "Add application".
+    *   Selecciona tu proveedor de Git (GitHub, GitLab, Bitbucket) y autoriza a Codemagic.
+    *   Elige el repositorio `prueba_to_do_list_acctur` (o el nombre de tu repositorio).
+    *   Selecciona "Ionic/Capacitor App" como el tipo de proyecto.
+
+3.  **Configura los Parámetros del Build**
+    *   En la configuración del proyecto, ve a la sección "Build".
+    *   Asegúrate de que la plataforma seleccionada sea "iOS".
+    *   **Importante**: Necesitarás configurar la firma de código (code signing) para iOS. Esto generalmente implica subir tus certificados y perfiles de aprovisionamiento (`.p12` y `.mobileprovision`) de tu cuenta de Apple Developer a Codemagic. Codemagic tiene una guía detallada para esto.
+
+4.  **Inicia la Compilación**
+    *   Una vez configurado, haz clic en "Start new build".
+    *   Codemagic clonará tu repositorio, instalará las dependencias y compilará tu aplicación para iOS. Este proceso puede tardar unos minutos.
+
+5.  **Descarga el IPA**
+    *   Cuando la compilación finalice exitosamente, verás un enlace para descargar el archivo `.ipa` directamente desde el dashboard de Codemagic.
+
+Este método es muy eficiente si no dispones de un entorno macOS para la compilación de iOS.
 
 ##  Funcionalidades Implementadas
 
@@ -621,7 +651,7 @@ ngOnDestroy() {
 8. **Modo Pomodoro**: Integración de técnica Pomodoro para tareas
 9. **Métricas gamificadas**: Sistema de logros y racha de productividad
 
-##  Capturas de Pantalla
+##  Capturas de Pantalla android 
 
 > **Nota**: Agrega capturas de pantalla de la aplicación en funcionamiento:
 - ![Imagen Todas](imagenesyvideos/Imagentodas.jpg)
@@ -632,6 +662,22 @@ ngOnDestroy() {
 - ![Dashboard](imagenesyvideos/dasboard.jpg)
 - ![Calendario](imagenesyvideos/calendario.jpg)
 - ![Calendario 1](imagenesyvideos/calendario1.jpg)
+
+
+##  Capturas de Pantalla ios 
+
+- ![iPhone 1](imagenesyvideos/iphone1.jpg)
+- ![iPhone 2](imagenesyvideos/iphone2.jpg)
+- ![iPhone 3](imagenesyvideos/iphone3.jpg)
+- ![iPhone 4](imagenesyvideos/iphone4.jpg)
+- ![iPhone 5](imagenesyvideos/iphone5.jpg)
+- ![iPhone 6](imagenesyvideos/iphone6.jpg)
+- ![iPhone 7](imagenesyvideos/iphone7.jpg)
+- ![iPhone 8](imagenesyvideos/iphone8.jpg)
+- ![iPhone 9](imagenesyvideos/iphone9.jpg)
+- ![iPhone 10](imagenesyvideos/iphone10.jpg)
+- ![iPhone 11](imagenesyvideos/iphone11.jpg)
+- ![iPhone 12](imagenesyvideos/iphone12jpg.jpg)
 
 
 Para generar capturas:
@@ -646,12 +692,9 @@ ionic cordova run android --device
 
 ## Video Demostración
 
-> **Nota**: Graba un video mostrando:
-<video controls width="100%">
-  <source src="imagenesyvideos/Screen_Recording_20251028_180545_Mis tareas.mp4" type="video/mp4">
-  Tu navegador no soporta el tag de video.
-</video>
+> **Nota**: este es un enlace de youtube control clic para abririr 
 
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=kAVKXuGgz2g" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Este proyecto fue desarrollado como prueba técnica.
 ## Autor
